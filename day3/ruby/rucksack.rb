@@ -1,0 +1,1 @@
+p File.readlines("test.txt", chomp: true).each_slice(3).to_a

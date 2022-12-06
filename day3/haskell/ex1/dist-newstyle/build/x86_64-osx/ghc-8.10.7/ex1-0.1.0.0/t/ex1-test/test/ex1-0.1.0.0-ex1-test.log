@@ -1,0 +1,9 @@
+Test suite ex1-test: RUNNING...
+[?25l
+mmm
+  someFunc [ ]                someFunc [[32m✔[0m]
+
+Finished in 0.0004 seconds
+[32m1 example, 0 failures[0m
+[?25hTest suite ex1-test: PASS
+Test suite logged to: /Users/gpace/playground/advent-of-code-2022/day3/haskell/ex1/dist-newstyle/build/x86_64-osx/ghc-8.10.7/ex1-0.1.0.0/t/ex1-test/test/ex1-0.1.0.0-ex1-test.log
