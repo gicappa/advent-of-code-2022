@@ -3,52 +3,50 @@ require "set"
 class App
 
     def num_tail_positions filename
-        @tail = Tail.new
+        @tail = Knot.new
         @head = Head.new(@tail)
-        lines = File.open(filename).readlines.map(&:chomp)
-        lines.map do |line|
-            cmd = line.split[0]
-            rep = line.split[1].to_i
-            rep.times do |n|
-                if cmd == 'R' 
-                    @head.r
-                end
-                if cmd == 'L' 
-                    @head.l
-                end
-                if cmd == 'U' 
-                    @head.u
-                end
-                if cmd == 'D' 
-                    @head.d
-                end
-            end
-        end
+        lines = File.open(filename)
+            .readlines
+            .map(&:chomp)
+            .map { |line| invoke_cmd cmd(line), rep(line) }
+            
         @tail.positions.count
+    end
+
+    def invoke_cmd cmd, rep
+        @head.send(cmd.downcase, rep.to_i)
+    end
+
+    def cmd(line)
+        line.split[0]
+    end
+    def rep(line)
+        line.split[1]
     end
 end
 
 class Head 
-    def initialize(tail)
-        @tail = tail
+    def initialize(knot)
+        @knot = knot
         @x = 0
         @y = 0
     end
 
-    def r
-        @tail.update_head_position(@x+=1, @y)
-        position
+    def r(times = 1)
+        move(1, 0, times)
     end
-    def l
-        @tail.update_head_position(@x-=1, @y)
-        position
+    def l(times = 1)
+        move(-1, 0, times)
     end
-    def u
-        @tail.update_head_position(@x, @y+=1)
-        position
+    def u(times = 1)
+        move(0, 1, times)
     end
-    def d
-        @tail.update_head_position(@x, @y-=1)
+    def d(times = 1)
+        move(0, -1, times)
+    end
+
+    def move(dx, dy, times = 1)
+        times.times { |i| @knot.update_position(@x+=dx, @y+=dy) }
         position
     end
 
@@ -57,36 +55,29 @@ class Head
     end
 end
 
-class Tail
+class Knot
 
     def initialize
         @x = 0
         @y = 0
-        @positions = Set.new
+        @positions = Set[[@x, @y]]
     end
 
-    # 1..H.   H(2,1) x=2-0 = 2
-    # 0T...   T(0,0) y=1-0 = 1
-    #  0123
-    #
-    # 1T.H.   H(2,1) x=2-0 = 2
-    # 0....   T(0,1) y=1-1 = 0
-    #  0123
-    #
-    def update_head_position(hx, hy)
-        if (hx - @x).abs > 1 && (hy - @y) == 0
+    def update_position(hx, hy)
+        if (hx - @x).abs > 1 
             @x += (hx - @x) / (hx - @x).abs
+
+            if (hy - @y).abs == 1
+                @y += (hy - @y) / (hy - @y).abs
+            end
         end
-        if (hx - @x) == 0 && (hy - @y).abs > 1
+
+        if (hy - @y).abs > 1
             @y += (hy - @y) / (hy - @y).abs
-        end
-        if (hx - @x).abs > 1 && (hy - @y).abs == 1
-            @x += (hx - @x) / (hx - @x).abs
-            @y += hy - @y
-        end
-        if (hx - @x).abs == 1 && (hy - @y).abs > 1
-            @x += hx - @x
-            @y += (hy - @y) / (hy - @y).abs
+        
+            if (hx - @x).abs == 1 
+                @x += (hx - @x) / (hx - @x).abs
+            end
         end
         record position
         position

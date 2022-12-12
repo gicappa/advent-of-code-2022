@@ -15,7 +15,7 @@ describe App do
 
   describe Head do
     before do
-      @head = Head.new(Tail.new)
+      @head = Head.new(Knot.new)
     end
 
     context "when head goes to the right" do
@@ -40,9 +40,9 @@ describe App do
     end
   end
 
-  describe Tail do
+  describe Knot do
     before do
-      @tail = Tail.new
+      @tail = Knot.new
       @head = Head.new(@tail)
     end
 
@@ -52,9 +52,7 @@ describe App do
         expect(@tail.position).to eq([0, 0])
       end
       it "moves when head is two block far away" do
-        @head.r
-        @head.r
-        @head.r
+        @head.r 3
         expect(@tail.position).to eq([2, 0])
       end
       it "moves when head is two block far away" do
@@ -64,15 +62,11 @@ describe App do
         expect(@tail.position).to eq([-2, 0])
       end
       it "moves when head is two block far away" do
-        @head.u
-        @head.u
-        @head.u
+        @head.u 3
         expect(@tail.position).to eq([0, 2])
       end
       it "moves when head is two block far away" do
-        @head.d
-        @head.d
-        @head.d
+        @head.d 3
         expect(@tail.position).to eq([0, -2])
       end
       it "moves when head is two block far away" do
@@ -90,16 +84,13 @@ describe App do
       end
       it "moves when head is two block far away" do
         @head.u
-        @head.r
-        @head.r
+        @head.r 2
         expect(@head.position).to eq([2, 1])
         expect(@tail.position).to eq([1, 1])
       end
       it "records the position of the tail" do
         @head.u
-        @head.r
-        @head.r
-        @head.r
+        @head.r 3
         expect(@tail.position).to eq([2, 1])
         expect(@tail.positions).to eq(Set[[0,0],[1,1],[2,1]])
       end
